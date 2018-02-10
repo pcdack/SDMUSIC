@@ -25,7 +25,7 @@ setup(
         license='MIT',
         author='pcdack',
         author_email='ibackud@gmail.com',
-        url='https://github.com/pcdack',
+        url='https://github.com/pcdack/SDMUSIC',
         description='Search && Download Music from netease qq,1ting,kugou and xiami',
         keywords=['sdmusic', 'netease','qq','kugou', 'music', 'downloader'],
     )

@@ -41,8 +41,6 @@ python3 setup.py install
 
 ### 搜索命令
 
-![](./gif/search.gif)
-
 ```shell
 sdmusic -n "体面" -s
 ```
@@ -59,9 +57,9 @@ sdmusic -n "体面" -p qq -g 1 -s
 
 \-o[output]:指定输出路径(*只有在指定为下载是有效*)
 
-### 下载命令
+![](./gif/search.gif)
 
-![](./gif/download.gif)
+### 下载命令
 
 > 可选参数与搜索命令一样
 
@@ -92,5 +90,6 @@ Index   MusicName       MusicAuthor
 sdmusic -n "体面" -p qq -d -i 1
 ```
 回车就可下载
+![](./gif/download.gif)
 
 Enjoy!
