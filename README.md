@@ -37,7 +37,12 @@ python3 setup.py install
 
 ## 使用
 
+
+
 ### 搜索命令
+
+![](./gif/search.gif)
+
 ```shell
 sdmusic -n "体面" -s
 ```
@@ -52,7 +57,11 @@ sdmusic -n "体面" -p qq -s
 sdmusic -n "体面" -p qq -g 1 -s
 ```
 
+\-o[output]:指定输出路径(*只有在指定为下载是有效*)
+
 ### 下载命令
+
+![](./gif/download.gif)
 
 > 可选参数与搜索命令一样
 

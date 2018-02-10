@@ -16,7 +16,7 @@ version_info="""
   \/_____/   \/____/   \/_/  \/_/   \/_____/   \/_____/   \/_/   \/_____/
   
 Search && Download Music Cli
-version 0.01a 
+version 0.02a 
 """
 
 
