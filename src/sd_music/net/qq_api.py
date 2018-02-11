@@ -1,5 +1,6 @@
 import requests
-from ..constants.qqmusic_constants import qq_headers, qq_get_music_info_url, qq_download_base_url
+import json
+from ..constants.qqmusic_constants import qq_headers, qq_get_music_info_url, qq_download_base_url,qq_get_music_lyric_url,qq_lrc_headers
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
 
@@ -51,3 +52,19 @@ class QQMusic(BaseApi):
                 print("未知错误")
         else:
             print("超出边界")
+
+    def get_music_lyric(self):
+        if self.__songmId != '':
+            lrc_url = qq_get_music_lyric_url(self.__songmId)
+            r = requests.get(lrc_url, headers=qq_lrc_headers)
+            lrc = r.text.replace("c(", "").replace(")", "")
+            lrc_json = json.loads(lrc)
+            if 'lyric' in lrc_json:
+                lrc = lrc_json['lyric']
+                lrc = lrc.replace("&#58;", ":").replace("&#46;", ":").replace("&#10;", "\n").replace("&#32;",
+                                                                                                     " ").replace(
+                    "&#45;", "")
+            return lrc
+        else:
+            print("异常")
+

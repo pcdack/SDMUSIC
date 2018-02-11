@@ -1,11 +1,13 @@
 import requests
 
-from ..constants.kugou_constants import get_search_url, kugou_header, kugou_base_download_url
+from ..constants.kugou_constants import get_search_url, kugou_header, kugou_base_download_url,get_lyric_url
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_out_of_bound, show_title
 
 
 class KugouCloud(BaseApi):
+    __hash=''
+
     def __init__(self,timeout=30):
         BaseApi.__init__(BaseApi(),timeout)
         self.timeout=timeout
@@ -37,6 +39,7 @@ class KugouCloud(BaseApi):
         if len(infos) >= index:
             info=infos[index]
             hash_code = info['hash']
+            self.__hash=hash_code
             get_download_url=kugou_base_download_url+hash_code
             download_r=self.get_request(get_download_url,header=kugou_header)
             download_url=download_r['url']
@@ -44,5 +47,11 @@ class KugouCloud(BaseApi):
         else:
             show_out_of_bound()
 
+    def get_music_lyric(self):
+        hash_code=self.__hash
+        lyric_url=get_lyric_url(hash_code)
+        r=requests.get(lyric_url)
+        lrc=r.text.encode('iso-8859-1').decode('utf-8').replace("\r","")
+        return lrc
 
 

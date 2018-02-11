@@ -19,10 +19,12 @@ Search && Download Music Cli
 version 0.02a 
 """
 
+def w_lrc(output,music_name,lrc):
+    with open(output + music_name + ".lrc", "w") as f:
+        f.write(lrc)
 
 
-
-def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,output='./'):
+def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,output='./',lyric=False):
     if platfrom == 'netease':
         net_api=NetEaseCloud()
         if choose:
@@ -32,6 +34,9 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
             id=mIds[index]
             neturl=net_api.get_music_url(id)
             download_from_url(neturl,output+music_name+'.mp3')
+            if lyric:
+                lry=net_api.get_music_lyric(id)
+                w_lrc(output,music_name,lry)
     elif platfrom == 'qq':
         qq_api=QQMusic()
         if choose:
@@ -39,6 +44,9 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
         else:
             qqurl=qq_api.get_music_url(music_name,index,offset)
             download_from_url(qqurl,output+music_name+'.m4a')
+            if lyric:
+                lrc = qq_api.get_music_lyric()
+                w_lrc(output, music_name, lrc)
         pass
     elif platfrom == '1ting':
         oneting_api=OneCloud()
@@ -56,6 +64,8 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
         else:
             url=xiami_api.get_music_url(music_name,offset,index)
             download_from_url(url,output+music_name+'.mp3')
+            if lyric:
+                download_from_url(xiami_api.get_music_lrc_url(),output+music_name+'.trc')
         pass
     elif platfrom == 'kugou':
         kugou_api=KugouCloud()
@@ -64,6 +74,9 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
         else:
             url=kugou_api.get_music_url(music_name,offset,index)
             download_from_url(url,output+music_name+'.mp3')
+            if lyric:
+                lrc=kugou_api.get_music_lyric()
+                w_lrc(output, music_name, lrc)
         pass
 
 
@@ -74,6 +87,7 @@ def main():
     parseGroup.add_argument("-s", "--search", action="store_true", help="search mode")
     parseGroup.add_argument("-d", "--download", action="store_true", help="download mode")
     parse.add_argument("-v", "--version", action="store_true", help="print product version")
+    parse.add_argument("-l", "--lyric", action="store_true", help="download with lyric")
     parse.add_argument("-n", "--name", type=str, help="input music name")
     parse.add_argument("-i", "--index", type=int, default=0, help="index for download music")
     parse.add_argument("-p", "--platform", type=str, choices=music_platform, default="netease",
@@ -93,7 +107,7 @@ def main():
         print("search\tMusicName:" + args.name + "\tPlatform:" + args.platform)
         search_or_download(name, offset, platform)
     elif args.download:
-        search_or_download(name, offset, platform, False, index - 1, output)
+        search_or_download(name, offset, platform, False, index - 1, output,args.lyric)
 
 
 if __name__=="__main__":

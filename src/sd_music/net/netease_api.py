@@ -1,12 +1,15 @@
 import requests
 
-from ..constants.netease_constants import headers, get_song_url, netease_music_search_url,netease_song_download_url
+from ..constants.netease_constants import headers, get_song_url, netease_music_search_url,netease_song_download_url,get_song_lyric_url
 from ..encrypt.netease_encrypt import encrypted_request
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
 
 
 class NetEaseCloud(BaseApi):
+
+    __music_id=''
+
     def __init__(self,timeout=30):
         BaseApi.__init__(BaseApi(),timeout)
         self.timeout=timeout
@@ -29,8 +32,8 @@ class NetEaseCloud(BaseApi):
         """
         url = get_song_url(song_id)
         result = self.common_get_request(url,headers)
-
         return result['songs'][0]
+
     def get_music_url(self, song_id, bit_rate=320000):
         """Get a song's download url.
         :params song_id: song id<int>.
@@ -50,7 +53,6 @@ class NetEaseCloud(BaseApi):
         result=self.common_post_request(url,headers,params)
         if 'songs' in result['result']:
             return result['result']['songs']
-
 
     def get_music_ids(self,music_name,offset=1):
         myIdJsons = self.get_music_id_json(music_name, offset)
@@ -88,7 +90,6 @@ class NetEaseCloud(BaseApi):
             show_title()
             for music_info in music_infos:
                 show_music(music_info['index'],music_info['music_name'],music_info['author'])
-                # print(str(music_info['index'])+"\t"+music_info['music_name']+"\t"+music_info['author'])
         else:
             print("出现错误")
 
@@ -98,3 +99,11 @@ class NetEaseCloud(BaseApi):
         song_id=music['id']
         music_url=self.get_music_url(song_id)
         return music_url
+
+    def get_music_lyric(self,music_id):    # 获取歌词
+        if music_id != None:
+            music_lyric_url=get_song_lyric_url(music_id)
+            r=requests.get(music_lyric_url)
+            data=r.json()
+            if 'lrc' in data:
+                return data['lrc']['lyric']

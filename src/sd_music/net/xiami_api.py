@@ -6,6 +6,8 @@ from ..utils.shower import show_music, show_out_of_bound
 
 
 class XiaMiCloud(BaseApi):
+    __lrcurl = ''
+
     def __init__(self, timeout=30):
         BaseApi.__init__(BaseApi(), timeout)
         self.timeout = timeout
@@ -37,6 +39,10 @@ class XiaMiCloud(BaseApi):
         if len(infos)>=index:
             info=infos[index]
             download_url = info['listen_file']
+            elf.__lrcurl = info['lyric']
             return download_url
         else:
             show_out_of_bound()
+
+    def get_music_lrc_url(self):
+        return self.__lrcurl

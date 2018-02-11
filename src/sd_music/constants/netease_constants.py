@@ -16,6 +16,11 @@ headers={
 
 netease_song_download_url = 'http://music.163.com/weapi/song/enhance/player/url?csrf_token='
 netease_music_search_url='http://music.163.com/api/cloudsearch/pc'
+netease_lyric_search_url='http://music.163.com/api/song/lyric?id='
+
+
+def get_song_lyric_url(music_id):
+    return netease_lyric_search_url+str(music_id)+'&lv=1'
 
 def get_song_url(music_id):
     return 'http://music.163.com/api/song/detail/?ids=[{}]'.format(music_id)
