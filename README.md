@@ -17,7 +17,7 @@ version 0.02a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
-支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu)
+支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
 ## 安装
 
