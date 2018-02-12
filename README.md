@@ -13,7 +13,7 @@
 
 
 Search && Download Music Cli
-version 0.02a
+version 0.03a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
