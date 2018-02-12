@@ -2,6 +2,8 @@ README.rst
 setup.py
 src/sd_music/__init__.py
 src/sd_music/start.py
+src/sd_music/bean/__init__.py
+src/sd_music/bean/music.py
 src/sd_music/constants/__init__.py
 src/sd_music/constants/encrypt_constants.py
 src/sd_music/constants/kugou_constants.py
@@ -19,6 +21,7 @@ src/sd_music/net/oneting_api.py
 src/sd_music/net/qq_api.py
 src/sd_music/net/xiami_api.py
 src/sd_music/utils/__init__.py
+src/sd_music/utils/cover_music.py
 src/sd_music/utils/downloader.py
 src/sd_music/utils/shower.py
 src/sdmusic.egg-info/PKG-INFO

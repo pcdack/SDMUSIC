@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='sdmusic',
-        version='0.02',
+        version='0.03',
         packages=find_packages('src'),
         package_dir = {'':'src'},
 
@@ -12,7 +12,8 @@ setup(
                 'requests>=2.17.3',
                 'pycrypto>=2.6.1',
                 'mutagen>=1.38.0',
-                'tqdm>=4.19.5'
+                'tqdm>=4.19.5',
+                'pydub>=0.20.0',
     ],
 
     entry_points={

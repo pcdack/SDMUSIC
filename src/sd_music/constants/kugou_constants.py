@@ -7,6 +7,7 @@ kugou_header = {'Referer': 'http://m.kugou.com/v2/static/html/search.html',
 
 kugou_lyric='http://m.kugou.com/app/i/krc.php?cmd=100&timelength=999999&hash='
 
+
 def get_search_url(music_name,page_num):
     return kugou_search_url_first+music_name+kugou_search_url_index+str(page_num)+kugou_search_url_last
 

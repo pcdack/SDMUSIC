@@ -2,7 +2,11 @@ import os
 from urllib.request import urlopen
 from tqdm import tqdm
 import requests
+
 # 下载工具
+from .cover_music import cover_music
+
+
 def download_from_url(url, dst):
     """
     @param: url to download file
@@ -27,3 +31,17 @@ def download_from_url(url, dst):
                 pbar.update(1024)
     pbar.close()
     return file_size
+
+
+def super_download(music_info, output, music_format='.mp3'):
+    music = {}
+    cover_url = music_info.album_pic_url
+    download_url = music_info.download_url
+    music_name = music_info.name
+    music['album_name'] = music_info.album_name
+    music['author'] = music_info.author
+    cover_path = output + music_name + ".jpg"
+    music_path = output + music_name + music_format
+    download_from_url(cover_url, cover_path)
+    download_from_url(download_url, music_path)
+    cover_music(music_path, cover_path, music)

@@ -1,26 +1,26 @@
 import requests
 
-from ..constants.netease_constants import headers, get_song_url, netease_music_search_url,netease_song_download_url,get_song_lyric_url
+from ..bean.music import Music
+from ..constants.netease_constants import headers, get_song_url, netease_music_search_url, netease_song_download_url, \
+    get_song_lyric_url
 from ..encrypt.netease_encrypt import encrypted_request
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
 
 
 class NetEaseCloud(BaseApi):
+    music = Music()
 
-    __music_id=''
+    def __init__(self, timeout=30):
+        BaseApi.__init__(BaseApi(), timeout)
+        self.timeout = timeout
 
-    def __init__(self,timeout=30):
-        BaseApi.__init__(BaseApi(),timeout)
-        self.timeout=timeout
-
-
-    def post_request(self,url,params):
-        data =encrypted_request(params)
-        r=requests.post(url,data=data,headers=headers,timeout=self.timeout)
-        result=r.json()
+    def post_request(self, url, params):
+        data = encrypted_request(params)
+        r = requests.post(url, data=data, headers=headers, timeout=self.timeout)
+        result = r.json()
         if result['code'] != 200:
-            print('Error return {} when try to post {} => {}'.format(result,data,url))
+            print('Error return {} when try to post {} => {}'.format(result, data, url))
         else:
             return result
 
@@ -31,7 +31,7 @@ class NetEaseCloud(BaseApi):
         :return:
         """
         url = get_song_url(song_id)
-        result = self.common_get_request(url,headers)
+        result = self.common_get_request(url, headers)
         return result['songs'][0]
 
     def get_music_url(self, song_id, bit_rate=320000):
@@ -47,63 +47,82 @@ class NetEaseCloud(BaseApi):
         song_url = result['data'][0]['url']
         return song_url
 
-    def get_music_id_json(self,music_name,offset):
-        url=netease_music_search_url
-        params={'s':music_name,'type':1,'offset':offset,'limit':10}
-        result=self.common_post_request(url,headers,params)
+    def get_music_id_json(self, music_name, offset):
+        url = netease_music_search_url
+        params = {'s': music_name, 'type': 1, 'offset': offset, 'limit': 10}
+        result = self.common_post_request(url, headers, params)
         if 'songs' in result['result']:
             return result['result']['songs']
 
-    def get_music_ids(self,music_name,offset=1):
+    def get_music_ids(self, music_name, offset=1):
         myIdJsons = self.get_music_id_json(music_name, offset)
-        myIds=[]
+        myIds = []
         for myIdJson in myIdJsons:
-            myId=myIdJson['id']
+            myId = myIdJson['id']
             myIds.append(myId)
         return myIds
 
     # 获取音乐的作者和MusicId
-    def get_musics_info(self,music_name,offset=1):
-        myIdJsons=self.get_music_id_json(music_name,offset)
-        music_infos=[]
-        index=1
+    def get_musics_info(self, music_name, offset=1):
+        music = Music
+        myIdJsons = self.get_music_id_json(music_name, offset)
+        music_infos = []
+        index = 1
         if myIdJsons != None:
             for myIdJson in myIdJsons:
                 music_info = {}
                 myId = myIdJson['id']
-                myAuthors=myIdJson['ar']
+                music.id = myId
+                myAuthors = myIdJson['ar']
                 authors = ''
                 for author in myAuthors:
                     authors += author['name']
-                music_info['author']=authors
-                music_info['id']=myId
-                music_info['music_name']=music_name
-                music_info['index']=index
+                music_info['author'] = authors
+                music_info['id'] = myId
+                music_info['music_name'] = music_name
+                music_info['index'] = index
                 music_infos.append(music_info)
-                index+=1
+                index += 1
             return music_infos
         else:
             print("出现错误")
-    def show_music_info(self,music_name,offset=1):
-        music_infos=self.get_musics_info(music_name,offset)
+
+    def show_music_info(self, music_name, offset=1):
+        music_infos = self.get_musics_info(music_name, offset)
         if music_infos != None:
             show_title()
             for music_info in music_infos:
-                show_music(music_info['index'],music_info['music_name'],music_info['author'])
+                show_music(music_info['index'], music_info['music_name'], music_info['author'])
         else:
             print("出现错误")
 
     # 获取音乐直链
-    def get_music_download_url(self,selected_id):
-        music=self.get_song(selected_id)
-        song_id=music['id']
-        music_url=self.get_music_url(song_id)
+    def get_music_download_url(self, selected_id):
+        music = self.get_song(selected_id)
+        song_id = music['id']
+        music_url = self.get_music_url(song_id)
         return music_url
 
-    def get_music_lyric(self,music_id):    # 获取歌词
+    def get_music_download_info(self,selected_id):
+        music = self.get_song(selected_id)
+        song_id = music['id']
+        self.music.id=song_id
+        self.music.name=music['name']
+        authors=music['artists']
+        author=''
+        for au in authors:
+            author+=au['name']
+        self.music.author=author
+        self.music.album_pic_url=music['album']['picUrl']
+        self.music.album_name=music['album']['name']
+        music_url = self.get_music_url(song_id)
+        self.music.download_url=music_url
+        return self.music
+
+    def get_music_lyric(self, music_id):  # 获取歌词
         if music_id != None:
-            music_lyric_url=get_song_lyric_url(music_id)
-            r=requests.get(music_lyric_url)
-            data=r.json()
+            music_lyric_url = get_song_lyric_url(music_id)
+            r = requests.get(music_lyric_url)
+            data = r.json()
             if 'lrc' in data:
                 return data['lrc']['lyric']
