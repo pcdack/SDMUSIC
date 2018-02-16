@@ -2,7 +2,7 @@ import requests
 
 from ..bean.music import Music
 from ..constants.netease_constants import headers, get_song_url, netease_music_search_url, netease_song_download_url, \
-    get_song_lyric_url
+    get_song_lyric_url,get_playlist_url
 from ..encrypt.netease_encrypt import encrypted_request
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
@@ -116,7 +116,7 @@ class NetEaseCloud(BaseApi):
         self.music.album_pic_url=music['album']['picUrl']
         self.music.album_name=music['album']['name']
         music_url = self.get_music_url(song_id)
-        self.music.download_url=music_url
+        self.music.download_url = music_url
         return self.music
 
     def get_music_lyric(self, music_id):  # 获取歌词
@@ -126,3 +126,25 @@ class NetEaseCloud(BaseApi):
             data = r.json()
             if 'lrc' in data:
                 return data['lrc']['lyric']
+
+    def get_play_list(self,playlist_id):
+        musics=[]
+        url = get_playlist_url(playlist_id)
+        result=self.common_get_request(url,headers)
+        tracks=result['result']['tracks']
+        for track in tracks:
+            music = Music()
+            id = track['id']
+            music.name = track['name']
+            music.id = id
+            music.album_pic_url = track['album']['picUrl']
+            music.album_name=track['album']['name']
+            authors = track['artists']
+            author = ''
+            for au in authors:
+                author+=au['name']
+            music.author = author
+            music_url = self.get_music_url(id)
+            music.download_url = music_url
+            musics.append(music)
+        return musics

@@ -2,10 +2,18 @@ import os
 from urllib.request import urlopen
 from tqdm import tqdm
 import requests
-
 # 下载工具
 from .cover_music import cover_music
 
+def download_musics(musics,output):
+    for music in musics:
+        print("正在下载:" + music.name)
+        download_from_url(music.download_url,output+music.name+".mp3")
+
+def super_download_musics(musics,output):
+    for music in musics:
+        print("正在下载:"+music.name)
+        super_download(music,output)
 
 def download_from_url(url, dst):
     """

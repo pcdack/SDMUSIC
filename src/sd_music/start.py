@@ -1,11 +1,12 @@
 import argparse
+from urllib.parse import parse_qs, urlparse
 
 from .net.kugou_api import KugouCloud
 from .net.netease_api import NetEaseCloud
 from .net.oneting_api import OneCloud
 from .net.qq_api import QQMusic
 from .net.xiami_api import XiaMiCloud
-from .utils.downloader import download_from_url, super_download
+from .utils.downloader import download_from_url, super_download,download_musics,super_download_musics
 
 desc="Search && Download Music cli"
 version_info="""
@@ -98,6 +99,24 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
                 w_lrc(output, music_name, lrc)
         pass
 
+def download_playlist_songs(music_play_list,output,lrc=False,album=False):
+    net_api=NetEaseCloud()
+    musics=net_api.get_play_list(music_play_list)
+    if album:
+        super_download_musics(musics,output)
+    else:
+        download_musics(musics,output)
+    if lrc:
+        for music in musics:
+            lry = net_api.get_music_lyric(music.id)
+            w_lrc(output, music.name, lry)
+
+def get_parse_id(song_id):
+    # Parse the url
+    if song_id.startswith('http'):
+        # Not allow fragments, we just need to parse the query string
+        return parse_qs(urlparse(song_id, allow_fragments=False).query)['id'][0]
+    return song_id
 
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
@@ -113,6 +132,7 @@ def main():
     parse.add_argument("-p", "--platform", type=str, choices=music_platform, default="netease",
                        help="platform you want to download include:qq,1ting,xiammi,kugou")
     parse.add_argument("-o", "--output", type=str, default="./", help="path you music")
+    parse.add_argument("-t", "--list", type=str, help="netease cloud music list")
     parse.add_argument("-g", "--page", type=int, default=1, help="the page you want to change")
     args = parse.parse_args()
 
@@ -128,7 +148,8 @@ def main():
         search_or_download(name, offset, platform)
     elif args.download:
         search_or_download(name, offset, platform, False, index - 1, output,args.lyric,args.album)
-
+    elif args.list:
+        download_playlist_songs(get_parse_id(args.list),args.output,args.lyric,args.album)
 
 if __name__=="__main__":
     main()

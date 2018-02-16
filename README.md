@@ -13,7 +13,7 @@
 
 
 Search && Download Music Cli
-version 0.03a
+version 0.05a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
@@ -24,7 +24,8 @@ version 0.03a
 - [x] 下载
 - [x] 歌词
 - [x] 专辑图片下载与嵌入(*在下载时指定\-a参数,实现此功能依赖你电脑的ffmpeg*)
-- [ ] 批量下载
+- [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云，支持批量歌词下载，批量专辑图嵌入*)
+- [x] 高清音乐源
 
 ## 安装
 
@@ -106,5 +107,17 @@ sdmusic -n "体面" -p qq -d -i 1
 ```
 回车就可下载
 ![](./gif/download.gif)
+
+#### 批量下载
+```shell
+sdmusic -l -a -t http://music.163.com/#/playlist?id=932596614
+```
+或
+```shell
+sdmusic -l -a -t 932596614
+```
+
+* \-l:批量下载歌词
+* \-a:批量将专辑图嵌入音乐
 
 Enjoy!
