@@ -5,6 +5,7 @@ src/sd_music/start.py
 src/sd_music/bean/__init__.py
 src/sd_music/bean/music.py
 src/sd_music/constants/__init__.py
+src/sd_music/constants/baidu_constants.py
 src/sd_music/constants/encrypt_constants.py
 src/sd_music/constants/kugou_constants.py
 src/sd_music/constants/netease_constants.py
@@ -14,6 +15,7 @@ src/sd_music/constants/xiami_constants.py
 src/sd_music/encrypt/__init__.py
 src/sd_music/encrypt/netease_encrypt.py
 src/sd_music/net/__init__.py
+src/sd_music/net/baidu_api.py
 src/sd_music/net/base_api.py
 src/sd_music/net/kugou_api.py
 src/sd_music/net/netease_api.py

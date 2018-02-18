@@ -1,6 +1,7 @@
 import argparse
 from urllib.parse import parse_qs, urlparse
 
+from .net.baidu_api import BaiduCloud
 from .net.kugou_api import KugouCloud
 from .net.netease_api import NetEaseCloud
 from .net.oneting_api import OneCloud
@@ -99,6 +100,7 @@ def search_or_download(music_name,offset,platfrom='netease',choose=True,index=1,
                 w_lrc(output, music_name, lrc)
         pass
 
+
 def download_playlist_songs(music_play_list,output,lrc=False,album=False):
     net_api=NetEaseCloud()
     musics=net_api.get_play_list(music_play_list)
@@ -118,6 +120,23 @@ def get_parse_id(song_id):
         return parse_qs(urlparse(song_id, allow_fragments=False).query)['id'][0]
     return song_id
 
+
+def test_music_flac(name):
+    baidu = BaiduCloud()
+    baidu.get_flac_info(name)
+    pass
+
+
+def download_flac(name,output,lyric):
+    baidu = BaiduCloud()
+    download_url=baidu.get_flac_url(name)
+    download_from_url(download_url,output+name+'.flac')
+    if lyric:
+        lrc_url=baidu.get_lrc()
+        download_from_url(lrc_url,output+name+'.lrc')
+    pass
+
+
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
     parse = argparse.ArgumentParser(description=desc)
@@ -125,6 +144,8 @@ def main():
     parseGroup.add_argument("-s", "--search", action="store_true", help="search mode")
     parseGroup.add_argument("-d", "--download", action="store_true", help="download mode")
     parse.add_argument("-v", "--version", action="store_true", help="print product version")
+    parse.add_argument("-tfc", "--testflac", action="store_true", help="append have flac music")
+    parse.add_argument("-dfc", "--downloadflac", action="store_true", help="download flac music")
     parse.add_argument("-a", "--album", action="store_true",help="include music album info")
     parse.add_argument("-l", "--lyric", action="store_true", help="download with lyric")
     parse.add_argument("-n", "--name", type=str, help="input music name")
@@ -150,6 +171,10 @@ def main():
         search_or_download(name, offset, platform, False, index - 1, output,args.lyric,args.album)
     elif args.list:
         download_playlist_songs(get_parse_id(args.list),args.output,args.lyric,args.album)
+    elif args.testflac:
+        test_music_flac(name)
+    elif args.downloadflac:
+        download_flac(name,args.output,args.lyric)
 
 if __name__=="__main__":
     main()

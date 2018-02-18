@@ -20,3 +20,6 @@ def cover_music(music_path,cover_path,music_info):
         music_path = music_path.replace(".mp3", ".m4a")
         os.remove(music_path)
         os.remove(cover_path)
+    elif '.flac' in music_path:
+        song=AudioSegment.from_file(music_path,'flac')
+        export_fun(song,music_path,cover_path,music_info)
