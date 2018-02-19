@@ -3,14 +3,22 @@ from urllib.request import urlopen
 from tqdm import tqdm
 import requests
 # 下载工具
+from .. import config
 from .cover_music import cover_music
 
-def download_musics(musics,output):
+def download_musics(musics, output):
     for music in musics:
         print("正在下载:" + music.name)
-        download_from_url(music.download_url,output+music.name+".mp3")
+        song_file_name = '{}.mp3'.format(music.name)
+        switcher_song = {
+            1: song_file_name,
+            2: '{} - {}.mp3'.format(music.author, music.name),
+            3: '{} - {}.mp3'.format(music.name, music.author)
+        }
+        song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
+        download_from_url(music.download_url, output+song_file_name)
 
-def super_download_musics(musics,output):
+def super_download_musics(musics, output):
     for music in musics:
         print("正在下载:"+music.name)
         super_download(music,output)
@@ -48,8 +56,30 @@ def super_download(music_info, output, music_format='.mp3'):
     music_name = music_info.name
     music['album_name'] = music_info.album_name
     music['author'] = music_info.author
+    if music_format == '.m4a':
+        song_file_name = '{}.m4a'.format(music_info.name)
+        switcher_song = {
+            1: song_file_name,
+            2: '{} - {}.m4a'.format(music_info.author, music_info.name),
+            3: '{} - {}.m4a'.format(music_info.name, music_info.author)
+        }
+    elif music_format == '.flac':
+        song_file_name = '{}.flac'.format(music_info.name)
+        switcher_song = {
+            1: song_file_name,
+            2: '{} - {}.flac'.format(music_info.author, music_info.name),
+            3: '{} - {}.flac'.format(music_info.name, music_info.author)
+        }
+    else:
+        song_file_name = '{}.mp3'.format(music_info.name)
+        switcher_song = {
+            1: song_file_name,
+            2: '{} - {}.mp3'.format(music_info.author, music_info.name),
+            3: '{} - {}.mp3'.format(music_info.name, music_info.author)
+        }
+    song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
     cover_path = output + music_name + ".jpg"
-    music_path = output + music_name + music_format
+    music_path = output + song_file_name
     download_from_url(cover_url, cover_path)
     download_from_url(download_url, music_path)
     cover_music(music_path, cover_path, music)

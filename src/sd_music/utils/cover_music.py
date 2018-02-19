@@ -8,7 +8,7 @@ def export_fun(song,music_path, cover_path, music_info):
                 , format="mp3"
                 , cover=cover_path)
 
-def cover_music(music_path,cover_path,music_info):
+def cover_music(music_path, cover_path, music_info):
     if '.mp3' in music_path:
         song=AudioSegment.from_mp3(music_path)
         export_fun(song,music_path,cover_path,music_info)

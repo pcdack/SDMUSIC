@@ -39,13 +39,15 @@ class BaiduCloud(BaseApi):
         id=info['songid']
         download_url_r = requests.get(get_download_url(id))
         download_url_r = download_url_r.json()
-        music_info = download_url_r['data']['songList'][0]
-        music_format = music_info['format']
-        if music_format == 'flac':
-            print('小伙子恭喜你，存在flac格式音乐')
+        if 'data' in download_url_r:
+            music_info = download_url_r['data']['songList'][0]
+            music_format = music_info['format']
+            if music_format == 'flac':
+                print('小伙子恭喜你，存在flac格式音乐')
+            else:
+                print('这个音乐没有flac格式，嘤嘤嘤')
         else:
             print('这个音乐没有flac格式，嘤嘤嘤')
-
 
     def get_flac_url(self,name):
         infos = self.get_music_info(name, 0)

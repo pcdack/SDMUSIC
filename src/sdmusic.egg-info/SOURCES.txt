@@ -1,6 +1,7 @@
 README.rst
 setup.py
 src/sd_music/__init__.py
+src/sd_music/config.py
 src/sd_music/start.py
 src/sd_music/bean/__init__.py
 src/sd_music/bean/music.py

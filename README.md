@@ -13,7 +13,7 @@
 
 
 Search && Download Music Cli
-version 0.05a
+version 0.07a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
@@ -26,7 +26,30 @@ version 0.05a
 - [x] 专辑图片下载与嵌入(*在下载时指定\-a参数,实现此功能依赖你电脑的ffmpeg*)
 - [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云，支持批量歌词下载，批量专辑图嵌入*)
 - [x] 高清音乐源(*使用\-tfc(test flac)参数来测试音乐是否有flac无损格式的，通过\-dfc(download flac)来下载flac格式的音乐，flac格式自带信息嵌入，所以不需要也不容许使用\-a，但可以使用\-l*)
-- [ ] 增加配置文件，给用户更多自定义功能
+- [x] 增加配置文件，给用户更多自定义功能
+- [ ] 根据文件下载音乐
+
+## 配置
+配置文件的位置`~/.sdmusic/sdmusic.config`
+### 可配置的项
+**文件名的命名格式**
+1. 歌曲名
+2. 歌手 - 歌曲名
+3. 歌曲名 - 歌手
+
+例如:我想使用第二种命名方式,那么我们只需要将配置文件中
+```shell
+ song.name_type = 2
+```
+**歌曲默认下载路径**
+例如修改到`/home/{username}/Music/test/`目录下:
+> 注意：路径要写全，否则可能报错 
+
+```shell
+ download.dir = /home/{username}/Music/test/
+ ```
+
+
 
 ## 安装
 
