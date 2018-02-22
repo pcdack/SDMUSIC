@@ -1,7 +1,8 @@
 import requests
 
+import json
 from ..bean.music import Music
-from ..constants.xiami_constants import get_search_url, xiami_header
+from ..constants.xiami_constants import get_search_url, xiami_header, get_list_url
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_out_of_bound
 
@@ -15,8 +16,12 @@ class XiaMiCloud(BaseApi):
         self.timeout = timeout
 
     def get_request(self,url,header):
-        r=requests.get(url,headers=header,timeout=self.timeout)
-        result=r.json()
+        r = requests.get(url, headers=header, timeout=self.timeout)
+        if 'jsonp182' in r.text:
+            text = r.text.replace('jsonp182','').replace('(', '').replace(')', '')
+            result=json.loads(text)
+        else:
+            result = r.json()
         if result['state'] != 0:
             print('Error return{} when try to use get function{}'.format(result,url))
         else:
@@ -61,3 +66,21 @@ class XiaMiCloud(BaseApi):
 
     def get_music_lrc_url(self):
         return self.__lrcurl
+
+    def get_play_list(self, music_list_id):
+        musics = []
+        get_play_list_url = get_list_url(music_list_id)
+        print(get_play_list_url)
+        result = self.get_request(get_play_list_url,xiami_header)
+        datas = result['data']['songs']
+        for data in datas:
+            music = Music()
+            music.name = data['song_name']
+            music.author = data['artist_name']
+            music.album_name = data['album_name']
+            music.album_pic_url = data['album_logo']
+            music.id = data['song_id']
+            music.download_url = data['listen_file']
+            music.lrc_url = data['lyric']
+            musics.append(music)
+        return musics

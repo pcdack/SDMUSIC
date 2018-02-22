@@ -59,7 +59,6 @@ class KugouCloud(BaseApi):
             self.__hash=hash_code
             get_download_url=kugou_base_download_url+hash_code
             download_r=self.get_request(get_download_url,header=kugou_header)
-            # download_url=download_r['url']
             self.music.name=download_r['songName']
             self.music.album_name=download_r['fileName']
             self.music.album_pic_url=download_r['album_img'].replace("{size}","150")

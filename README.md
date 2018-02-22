@@ -13,18 +13,20 @@
 
 
 Search && Download Music Cli
-version 0.07a
+version 0.08a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
+
+> 新增加虾米歌单下载，注意歌单下载默认是网易云，可以通过\-p xiami来下载虾米音乐，修复高清测试空格出错的情况
 
 ## 功能清单
 - [x] 搜索
 - [x] 下载
 - [x] 歌词
 - [x] 专辑图片下载与嵌入(*在下载时指定\-a参数,实现此功能依赖你电脑的ffmpeg*)
-- [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云，支持批量歌词下载，批量专辑图嵌入*)
+- [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云,虾米，支持批量歌词下载，批量专辑图嵌入*)
 - [x] 高清音乐源(*使用\-tfc(test flac)参数来测试音乐是否有flac无损格式的，通过\-dfc(download flac)来下载flac格式的音乐，flac格式自带信息嵌入，所以不需要也不容许使用\-a，但可以使用\-l*)
 - [x] 增加配置文件，给用户更多自定义功能
 - [ ] 根据文件下载音乐
@@ -139,6 +141,10 @@ sdmusic -l -a -t http://music.163.com/#/playlist?id=932596614
 或
 ```shell
 sdmusic -l -a -t 932596614
+```
+批量下载虾米：
+```shell
+sdmusic -p xiami -t http://www.xiami.com/collect/281354699?spm=a1z1s.2943601.6856193.2.LkPhvN
 ```
 
 * \-l:批量下载歌词

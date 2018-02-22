@@ -34,6 +34,7 @@ class BaiduCloud(BaseApi):
             i += 1
 
     def get_flac_info(self,name):
+        name= self.change_name_format(name)
         infos = self.get_music_info(name, 0)
         info = infos[0]
         id=info['songid']
@@ -49,7 +50,12 @@ class BaiduCloud(BaseApi):
         else:
             print('这个音乐没有flac格式，嘤嘤嘤')
 
+    def change_name_format(self,name):
+        if ' ' in name:
+            return name.replace(' ', '\ ')
+
     def get_flac_url(self,name):
+        name = self.change_name_format(name)
         infos = self.get_music_info(name, 0)
         info = infos[0]
         self.__musicid=info['songid']
@@ -65,6 +71,7 @@ class BaiduCloud(BaseApi):
         return music_info['lrcLink']
 
     def get_flac_url_and_info(self,name):
+        name=self.change_name_format(name)
         infos = self.get_music_info(name, 0)
         info = infos[0]
         self.__musicid = info['songid']

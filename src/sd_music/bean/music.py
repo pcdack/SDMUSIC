@@ -56,4 +56,12 @@ class Music(object):
 
     @download_index.setter
     def download_index(self,index):
-        self.__download_index=index
+        self.__download_index = index
+
+    @property
+    def lrc_url(self):
+        return self.__lrc_url
+
+    @lrc_url.setter
+    def lrc_url(self,url):
+        self.__lrc_url = url

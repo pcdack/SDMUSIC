@@ -19,10 +19,11 @@ version_info="""
   \/_____/   \/____/   \/_/  \/_/   \/_____/   \/_____/   \/_/   \/_____/
   
 Search && Download Music Cli
-version 0.07a 
+version 0.08a 
 """
 
 config.load_config()
+
 
 def w_lrc(output,music_name,lrc):
     with open(output + music_name + ".lrc", "w") as f:
@@ -48,6 +49,7 @@ def get_music_name(music_info, music_format='.mp3'):
     song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
     print(song_file_name)
     return song_file_name
+
 
 def search_or_download(music_name, offset, platfrom='netease', choose=True, index=1, output='./', lyric=False, album=False):
     if platfrom == 'netease':
@@ -124,7 +126,7 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
         pass
 
 
-def download_playlist_songs(music_play_list,output,lrc=False,album=False):
+def download_netease_playlist_songs(music_play_list,output,lrc=False,album=False):
     net_api=NetEaseCloud()
     musics=net_api.get_play_list(music_play_list)
     if album:
@@ -135,6 +137,25 @@ def download_playlist_songs(music_play_list,output,lrc=False,album=False):
         for music in musics:
             lry = net_api.get_music_lyric(music.id)
             w_lrc(output, music.name, lry)
+
+
+def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
+    xiami = XiaMiCloud()
+    musics = xiami.get_play_list(music_play_list)
+    for music in musics:
+        print(music)
+    if album:
+        super_download_musics(musics, output)
+    else:
+        download_musics(musics, output)
+    if lrc:
+        for music in musics:
+            lrc = music.lrc_url
+            if lrc:
+                download_from_url(lrc, output + music.name + '.trc')
+            else:
+                print("没有歌词")
+
 
 def get_parse_id(song_id):
     # Parse the url
@@ -168,6 +189,22 @@ def download_flac(name,output,lyric):
     pass
 
 
+def get_music_list_id(list,output,lyric,album):
+    if 'collect' in list:
+        id = list.split('?')[0].split('/')[-1]
+    else:
+        id = list
+    download_xiami_playlist_songs(id,output,lyric,album)
+
+
+def download_list(list, platform, output, lyric, album):
+    if platform == 'xiami':
+        get_music_list_id(list, output, lyric, album)
+    elif platform == 'netease':
+        download_netease_playlist_songs(get_parse_id(list),output,lyric,album)
+    pass
+
+
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
     parse = argparse.ArgumentParser(description=desc)
@@ -187,7 +224,6 @@ def main():
     parse.add_argument("-t", "--list", type=str, help="netease cloud music list")
     parse.add_argument("-g", "--page", type=int, default=1, help="the page you want to change")
     args = parse.parse_args()
-
     name = args.name
     platform = args.platform
     offset = args.page
@@ -202,13 +238,14 @@ def main():
         print("search\tMusicName:" + args.name + "\tPlatform:" + args.platform)
         search_or_download(name, offset, platform)
     elif args.download:
-        search_or_download(name, offset, platform, False, index - 1, output,args.lyric,args.album)
+        search_or_download(name, offset, platform, False, index - 1, output, args.lyric, args.album)
     elif args.list:
-        download_playlist_songs(get_parse_id(args.list), output, args.lyric, args.album)
+        download_list(args.list, platform, output, args.lyric, args.album)
     elif args.testflac:
         test_music_flac(name)
     elif args.downloadflac:
-        download_flac(name,args.output,args.lyric)
+        download_flac(name, output, args.lyric)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
