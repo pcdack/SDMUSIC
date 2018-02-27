@@ -13,13 +13,19 @@
 
 
 Search && Download Music Cli
-version 0.08a
+version 0.09a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
-> 新增加虾米歌单下载，注意歌单下载默认是网易云，可以通过\-p xiami来下载虾米音乐，修复高清测试空格出错的情况
+>代码写的如屎一般，还请各位提提写法上的issue。谢谢。
+
+> 2-27
+新增QQ音乐歌单下载，需要指定\-p qq。注意qq音乐批量下载中需要将`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=3710267240`改为`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240`否则无法正常工作。
+
+
+> 新增加虾米歌单下载，注意歌单下载默认是网易云，可以通过\-p xiami来下载虾米音乐，修复高清测试空格出错的情况.
 
 ## 功能清单
 - [x] 搜索
@@ -29,6 +35,7 @@ version 0.08a
 - [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云,虾米，支持批量歌词下载，批量专辑图嵌入*)
 - [x] 高清音乐源(*使用\-tfc(test flac)参数来测试音乐是否有flac无损格式的，通过\-dfc(download flac)来下载flac格式的音乐，flac格式自带信息嵌入，所以不需要也不容许使用\-a，但可以使用\-l*)
 - [x] 增加配置文件，给用户更多自定义功能
+- [ ] 批量下载热歌
 - [ ] 根据文件下载音乐
 
 ## 配置
@@ -135,6 +142,8 @@ sdmusic -n "体面" -p qq -d -i 1
 ![](./gif/download.gif)
 
 #### 批量下载
+**歌单下载**
+
 ```shell
 sdmusic -l -a -t http://music.163.com/#/playlist?id=932596614
 ```
@@ -142,9 +151,19 @@ sdmusic -l -a -t http://music.163.com/#/playlist?id=932596614
 ```shell
 sdmusic -l -a -t 932596614
 ```
-批量下载虾米：
+批量下载虾米歌单：
 ```shell
 sdmusic -p xiami -t http://www.xiami.com/collect/281354699?spm=a1z1s.2943601.6856193.2.LkPhvN
+```
+批量下载QQ音乐歌单:
+> 注意`&`符号前一定要加\\否则会报错
+
+```shell
+sdmusic -p qq -t https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240 
+```
+直接指定ID
+```shell
+sdmusic -p -t 3710267240
 ```
 
 * \-l:批量下载歌词

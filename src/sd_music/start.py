@@ -142,8 +142,8 @@ def download_netease_playlist_songs(music_play_list,output,lrc=False,album=False
 def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
     xiami = XiaMiCloud()
     musics = xiami.get_play_list(music_play_list)
-    for music in musics:
-        print(music)
+    # for music in musics:
+    #     print(music.name)
     if album:
         super_download_musics(musics, output)
     else:
@@ -155,6 +155,23 @@ def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
                 download_from_url(lrc, output + music.name + '.trc')
             else:
                 print("没有歌词")
+
+
+def download_qq_playlist_songs(id, output, lyric=False, album=False):
+    qq = QQMusic()
+    qq_musics = qq.get_music_list_infos(id)
+    if album:
+        super_download_musics(qq_musics, output)
+    else:
+        download_musics(qq_musics, output)
+    if lyric:
+        for music in qq_musics:
+            lrc = music.lrc_url
+            if lrc:
+                w_lrc(output, music.name, lrc)
+            else:
+                print("没有歌词!")
+    pass
 
 
 def get_parse_id(song_id):
@@ -189,7 +206,8 @@ def download_flac(name,output,lyric):
     pass
 
 
-def get_music_list_id(list,output,lyric,album):
+def get_xia_music_list_id(list, output, lyric, album):
+    # todo:这里用正则似乎更好
     if 'collect' in list:
         id = list.split('?')[0].split('/')[-1]
     else:
@@ -197,12 +215,21 @@ def get_music_list_id(list,output,lyric,album):
     download_xiami_playlist_songs(id,output,lyric,album)
 
 
+def get_qq_music_list_id(list, output, lyric, album):
+    if 'taoge' in list:
+        id = list.split('=')[-1]
+    else:
+        id = list
+    download_qq_playlist_songs(id, output, lyric, album)
+
+
 def download_list(list, platform, output, lyric, album):
     if platform == 'xiami':
-        get_music_list_id(list, output, lyric, album)
+        get_xia_music_list_id(list, output, lyric, album)
     elif platform == 'netease':
         download_netease_playlist_songs(get_parse_id(list),output,lyric,album)
-    pass
+    elif platform == 'qq':
+        get_qq_music_list_id(list, output, lyric, album)
 
 
 def main():
