@@ -2,7 +2,7 @@ import requests
 
 from ..bean.music import Music
 from ..constants.netease_constants import headers, get_song_url, netease_music_search_url, netease_song_download_url, \
-    get_song_lyric_url,get_playlist_url
+    get_song_lyric_url, get_playlist_url
 from ..encrypt.netease_encrypt import encrypted_request
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
@@ -68,7 +68,7 @@ class NetEaseCloud(BaseApi):
         myIdJsons = self.get_music_id_json(music_name, offset)
         music_infos = []
         index = 1
-        if myIdJsons != None:
+        if myIdJsons:
             for myIdJson in myIdJsons:
                 music_info = {}
                 myId = myIdJson['id']
@@ -148,3 +148,6 @@ class NetEaseCloud(BaseApi):
             music.download_url = music_url
             musics.append(music)
         return musics
+
+
+

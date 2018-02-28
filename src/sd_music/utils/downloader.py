@@ -6,22 +6,35 @@ import requests
 from .. import config
 from .cover_music import cover_music
 
-def download_musics(musics, output):
+
+def download_musics(musics, output, music_format = '.mp3'):
     for music in musics:
         print("正在下载:" + music.name)
-        song_file_name = '{}.mp3'.format(music.name)
-        switcher_song = {
-            1: song_file_name,
-            2: '{} - {}.mp3'.format(music.author, music.name),
-            3: '{} - {}.mp3'.format(music.name, music.author)
-        }
+        if '/' in music.name:
+            music.name = music.name.replace('/', '')
+        if music_format == '.m4a':
+            song_file_name = '{}.m4a'.format(music.name)
+            switcher_song = {
+                1: song_file_name,
+                2: '{} - {}.m4a'.format(music.author, music.name),
+                3: '{} - {}.m4a'.format(music.name, music.author)
+            }
+        else:
+            song_file_name = '{}.mp3'.format(music.name)
+            switcher_song = {
+                1: song_file_name,
+                2: '{} - {}.mp3'.format(music.author, music.name),
+                3: '{} - {}.mp3'.format(music.name, music.author)
+            }
         song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
         download_from_url(music.download_url, output+song_file_name)
 
-def super_download_musics(musics, output):
+
+def super_download_musics(musics, output, music_format='.mp3'):
     for music in musics:
         print("正在下载:"+music.name)
-        super_download(music,output)
+        super_download(music, output, music_format)
+
 
 def download_from_url(url, dst):
     """
@@ -54,6 +67,8 @@ def super_download(music_info, output, music_format='.mp3'):
     cover_url = music_info.album_pic_url
     download_url = music_info.download_url
     music_name = music_info.name
+    if '/' in music_name:
+        music_name = music_name.replace('/', '')
     music['album_name'] = music_info.album_name
     music['author'] = music_info.author
     if music_format == '.m4a':

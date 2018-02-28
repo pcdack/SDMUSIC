@@ -1,15 +1,16 @@
 import requests
 import json
+from tqdm import tqdm
 
 from ..bean.music import Music
 from ..constants.qqmusic_constants import qq_headers, qq_get_music_info_url, qq_download_base_url, \
-    qq_get_music_lyric_url, qq_lrc_headers, qq_album_url,qq_music_list_url
+    qq_get_music_lyric_url, qq_lrc_headers, qq_album_url, qq_music_list_url, qq_top_list_url
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_title
 
 
 class QQMusic(BaseApi):
-    __songmId=''
+    __songmId = ''
     music=Music()
 
     def __init__(self, timeout=30):
@@ -45,27 +46,8 @@ class QQMusic(BaseApi):
     def get_music_url_and_info(self, music_name, index, page_num=1):
         myDatas = self.get_music_info(music_name, page_num)
         data = myDatas[index]
-        if 'songmid' in data and 'songid' in data:
-            mymId = data['songmid']
-            myId = data['songid']
-            self.music.name=music_name
-            authors=data['singer']
-            author=''
-            for a in authors:
-                author += a['name']
-            self.music.author=author
-            self.music.album_name=data['albumname']
-            self.music.album_pic_url= qq_album_url+data['albummid']+'.jpg'
-            qq_download_url = qq_download_base_url + '?songmid=' + mymId + '&format=json'
-            r = self.get_request(qq_download_url, header=qq_headers)
-            if 'url' in r:
-                download_url = r['url'][str(myId)]
-                self.music.download_url="http://" + download_url
-                return self.music
-            else:
-                print("未知错误")
-        else:
-            print("超出边界")
+        music = self.get_music_info_by_data(data, self.music)
+        return music
 
     def get_music_url(self, music_name, index, page_num=1):
         myDatas = self.get_music_info(music_name, page_num)
@@ -82,6 +64,20 @@ class QQMusic(BaseApi):
                 print("未知错误")
         else:
             print("超出边界")
+
+    def get_music_top_list(self, music_top_id,music_num=100):
+        url = qq_top_list_url(music_top_id)
+        info = self.get_request(url, qq_headers)
+        musics = []
+        bar = tqdm(range(music_num))
+        infos = info['songlist']
+        for music_info in infos:
+            music_info = music_info['data']
+            music = Music()
+            music = self.get_music_info_by_data(music_info, music)
+            musics.append(music)
+            bar.update(1)
+        return musics
 
     def get_music_list_infos(self, music_list_id):
         url = qq_music_list_url(music_list_id)
@@ -129,3 +125,26 @@ class QQMusic(BaseApi):
         else:
             print("异常")
 
+    def get_music_info_by_data(self, data, music):
+        if 'songmid' in data and 'songid' in data:
+            mymId = data['songmid']
+            myId = data['songid']
+            music.name = data['songname']
+            authors = data['singer']
+            author = ''
+            for a in authors:
+                author += a['name']
+            music.id = mymId
+            music.author = author
+            music.album_name = data['albumname']
+            self.__songmId = mymId
+            music.lrc_url = self.get_music_lyric()
+            music.album_pic_url = qq_album_url + data['albummid'] + '.jpg'
+            qq_download_url = qq_download_base_url + '?songmid=' + mymId + '&format=json'
+            r = self.get_request(qq_download_url, header=qq_headers)
+            if 'url' in r:
+                download_url = r['url'][str(myId)]
+                music.download_url = "http://" + download_url
+                return music
+        else:
+            print("未知错误")

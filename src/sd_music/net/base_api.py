@@ -22,3 +22,11 @@ class BaseApi:
         else:
             return result
 
+
+    def sample_get_request(self, url, header):
+        r = requests.get(url,headers=header)
+        try:
+            result = r.json()
+            return result
+        except UnicodeDecodeError:
+            print("字符转码错误"+r.text)

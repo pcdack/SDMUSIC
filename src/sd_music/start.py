@@ -1,6 +1,8 @@
 import argparse
 from urllib.parse import parse_qs, urlparse
 
+from .constants.qqmusic_constants import qq_dict
+from .constants.netease_constants import netease_dict
 from . import config
 from .net.baidu_api import BaiduCloud
 from .net.kugou_api import KugouCloud
@@ -28,6 +30,12 @@ config.load_config()
 def w_lrc(output,music_name,lrc):
     with open(output + music_name + ".lrc", "w") as f:
         f.write(lrc)
+
+
+def format_music_name(song_file_name):
+    if '/' in song_file_name:
+        song_file_name = song_file_name.replace('/', '')
+    return song_file_name
 
 
 def get_music_name(music_info, music_format='.mp3'):
@@ -60,36 +68,36 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
             mIds = net_api.get_music_ids(music_name, offset)
             id = mIds[index]
             music_info = net_api.get_music_download_info(id)
-            song_file_name = get_music_name(music_info)
+            song_file_name = format_music_name(get_music_name(music_info))
             if album:
-                super_download(music_info,output)
+                super_download(music_info, output)
             else:
-                download_from_url(music_info.download_url,output+song_file_name)
+                download_from_url(music_info.download_url, output+song_file_name)
             if lyric:
                 lry=net_api.get_music_lyric(id)
                 w_lrc(output,music_name,lry)
     elif platfrom == 'qq':
         qq_api=QQMusic()
         if choose:
-            qq_api.show_music_infos(music_name,offset)
+            qq_api.show_music_infos(music_name, offset)
         else:
             music_info = qq_api.get_music_url_and_info(music_name, index, offset)
-            song_file_name = get_music_name(music_info, '.m4a')
+            song_file_name = format_music_name(get_music_name(music_info, '.m4a'))
             if album:
                 super_download(music_info, output, ".m4a")
             else:
                 download_from_url(music_info.download_url, output+song_file_name)
             if lyric:
-                lrc = qq_api.get_music_lyric()
+                lrc = music_info.lrc_url
                 w_lrc(output, music_name, lrc)
         pass
     elif platfrom == '1ting':
         oneting_api=OneCloud()
         if choose:
-            oneting_api.show_music_infos(music_name,offset)
+            oneting_api.show_music_infos(music_name, offset)
         else:
             music_info = oneting_api.get_music_url_and_info(music_name, offset, index)
-            song_file_name = get_music_name(music_info)
+            song_file_name = format_music_name(get_music_name(music_info))
             if album:
                 super_download(music_info, output)
             else:
@@ -101,7 +109,7 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
             xiami_api.show_music_infos(music_name,offset)
         else:
             music_info = xiami_api.get_music_url_and_info(music_name, offset, index)
-            song_file_name = get_music_name(music_info)
+            song_file_name = format_music_name(get_music_name(music_info))
             if album:
                 super_download(music_info,output)
             else:
@@ -115,7 +123,7 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
             kugou_api.show_music_infos(music_name,offset)
         else:
             music_info = kugou_api.get_music_url_and_info(music_name, offset, index)
-            song_file_name = get_music_name(music_info)
+            song_file_name = format_music_name(get_music_name(music_info))
             if album:
                 super_download(music_info,output)
             else:
@@ -127,8 +135,8 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
 
 
 def download_netease_playlist_songs(music_play_list,output,lrc=False,album=False):
-    net_api=NetEaseCloud()
-    musics=net_api.get_play_list(music_play_list)
+    net_api = NetEaseCloud()
+    musics = net_api.get_play_list(music_play_list)
     if album:
         super_download_musics(musics, output)
     else:
@@ -137,6 +145,24 @@ def download_netease_playlist_songs(music_play_list,output,lrc=False,album=False
         for music in musics:
             lry = net_api.get_music_lyric(music.id)
             w_lrc(output, music.name, lry)
+
+
+def download_qq_hot_songs(id, output, lyric, album):
+    print("数据有点多，有300首左右，请稍等。。。嘤嘤嘤,下面是加载进度条，不是下载进度")
+    qq_api = QQMusic()
+    qq_musics = qq_api.get_music_top_list(id, 300)
+    if album:
+        super_download_musics(qq_musics, output)
+    else:
+        download_musics(qq_musics, output)
+    if lyric:
+        for music in qq_musics:
+            lrc = music.lrc_url
+            if lrc:
+                w_lrc(output, music.name, lrc)
+            else:
+                print("没有歌词!")
+    pass
 
 
 def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
@@ -154,7 +180,7 @@ def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
             if lrc:
                 download_from_url(lrc, output + music.name + '.trc')
             else:
-                print("没有歌词")
+                print("没有歌词!")
 
 
 def download_qq_playlist_songs(id, output, lyric=False, album=False):
@@ -232,6 +258,15 @@ def download_list(list, platform, output, lyric, album):
         get_qq_music_list_id(list, output, lyric, album)
 
 
+def download_hot_list(platform, output, lyric, album):
+    if platform == 'netease':
+        download_netease_playlist_songs(netease_dict['hot'], output, lyric, album)
+    elif platform == 'qq':
+        download_qq_hot_songs(qq_dict['hot'], output, lyric, album)
+        pass
+    pass
+
+
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
     parse = argparse.ArgumentParser(description=desc)
@@ -243,6 +278,7 @@ def main():
     parse.add_argument("-dfc", "--downloadflac", action="store_true", help="download flac music")
     parse.add_argument("-a", "--album", action="store_true",help="include music album info")
     parse.add_argument("-l", "--lyric", action="store_true", help="download with lyric")
+    parse.add_argument("-hot",action="store_true", help = "download hot music from netease qq kugou")
     parse.add_argument("-n", "--name", type=str, help="input music name")
     parse.add_argument("-i", "--index", type=int, default=0, help="index for download music")
     parse.add_argument("-p", "--platform", type=str, choices=music_platform, default="netease",
@@ -268,6 +304,9 @@ def main():
         search_or_download(name, offset, platform, False, index - 1, output, args.lyric, args.album)
     elif args.list:
         download_list(args.list, platform, output, args.lyric, args.album)
+    elif args.hot:
+        print("热歌下载启动：")
+        download_hot_list(platform, output, args.lyric, args.album)
     elif args.testflac:
         test_music_flac(name)
     elif args.downloadflac:

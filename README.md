@@ -13,13 +13,16 @@
 
 
 Search && Download Music Cli
-version 0.09a
+version 0.10a
 
 语言：Python3
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
 >代码写的如屎一般，还请各位提提写法上的issue。谢谢。
+
+> 2-28
+新增网易云和QQ音乐热歌榜下载,指定参数\-hot加平台就可以了,修复\/的BUG
 
 > 2-27
 新增QQ音乐歌单下载，需要指定\-p qq。注意qq音乐批量下载中需要将`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=3710267240`改为`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240`否则无法正常工作。
@@ -35,7 +38,7 @@ version 0.09a
 - [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云,虾米，支持批量歌词下载，批量专辑图嵌入*)
 - [x] 高清音乐源(*使用\-tfc(test flac)参数来测试音乐是否有flac无损格式的，通过\-dfc(download flac)来下载flac格式的音乐，flac格式自带信息嵌入，所以不需要也不容许使用\-a，但可以使用\-l*)
 - [x] 增加配置文件，给用户更多自定义功能
-- [ ] 批量下载热歌
+- [x] 批量下载hot(网易云热歌榜，QQ音乐热歌榜)
 - [ ] 根据文件下载音乐
 
 ## 配置
@@ -163,7 +166,17 @@ sdmusic -p qq -t https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240
 ```
 直接指定ID
 ```shell
-sdmusic -p -t 3710267240
+sdmusic -p qq -t 3710267240
+```
+
+**下载热歌**
+网易云
+```shell
+sdmusic -hot
+```
+QQ音乐
+```shell
+sdmusic -hot -p qq
 ```
 
 * \-l:批量下载歌词

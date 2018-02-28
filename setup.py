@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='sdmusic',
-        version='0.09',
+        version='0.10',
         packages=find_packages('src'),
         package_dir = {'':'src'},
 
