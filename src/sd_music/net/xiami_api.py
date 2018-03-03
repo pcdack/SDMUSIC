@@ -1,15 +1,16 @@
 import requests
 
 import json
+import re
 from ..bean.music import Music
-from ..constants.xiami_constants import get_search_url, xiami_header, get_list_url
+from ..constants.xiami_constants import get_search_url, xiami_header, get_list_url, get_hot_url, get_music_id
 from ..net.base_api import BaseApi
 from ..utils.shower import show_music, show_out_of_bound
 
 
 class XiaMiCloud(BaseApi):
     __lrcurl = ''
-    music=Music()
+    music = Music()
 
     def __init__(self, timeout=30):
         BaseApi.__init__(BaseApi(), timeout)
@@ -17,9 +18,9 @@ class XiaMiCloud(BaseApi):
 
     def get_request(self,url,header):
         r = requests.get(url, headers=header, timeout=self.timeout)
-        if 'jsonp182' in r.text:
-            text = r.text.replace('jsonp182','').replace('(', '').replace(')', '')
-            result=json.loads(text)
+        if 'jsonp' in r.text:
+            m = re.match('jsonp\d{3}\((.*)\).*$', r.text)
+            result = json.loads(str(m.group(1)))
         else:
             result = r.json()
         if result['state'] != 0:
@@ -56,7 +57,7 @@ class XiaMiCloud(BaseApi):
 
     def get_music_url(self,music_name,page_num,index):
         infos=self.get_music_info(music_name,page_num)
-        if len(infos)>=index:
+        if len(infos) >= index:
             info=infos[index]
             download_url = info['listen_file']
             self.__lrcurl = info['lyric']
@@ -70,8 +71,7 @@ class XiaMiCloud(BaseApi):
     def get_play_list(self, music_list_id):
         musics = []
         get_play_list_url = get_list_url(music_list_id)
-        print(get_play_list_url)
-        result = self.get_request(get_play_list_url,xiami_header)
+        result = self.get_request(get_play_list_url, xiami_header)
         datas = result['data']['songs']
         for data in datas:
             music = Music()
@@ -82,5 +82,29 @@ class XiaMiCloud(BaseApi):
             music.id = data['song_id']
             music.download_url = data['listen_file']
             music.lrc_url = data['lyric']
+            musics.append(music)
+        return musics
+
+    def get_music_info_by_id(self,music_id,music):
+        url = get_music_id(music_id)
+        result = self.get_request(url, xiami_header)
+        data = result['data']['song']
+        music.name = data['song_name']
+        music.album_name = data['album_name']
+        music.album_pic_url = data['logo']
+        music.lrc_url = data['lyric']
+        music.author = data['singers']
+        music.download_url=data['listen_file']
+
+    def get_hot_music_infos(self, hot_music_id):
+        musics = []
+        #todo 通过config文件配置指定下载数量
+        hot_music_url = get_hot_url(hot_music_id, 1)
+        result = self.get_request(hot_music_url, xiami_header)
+        datas = result['data']
+        for data in datas:
+            music = Music()
+            id = data['song_id']
+            self.get_music_info_by_id(id, music)
             musics.append(music)
         return musics

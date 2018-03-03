@@ -13,13 +13,16 @@
 
 
 Search && Download Music Cli
-version 0.10a
+version 0.11a
 
-语言：Python3
+本软件只用来交流测试与学习。
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
 >代码写的如屎一般，还请各位提提写法上的issue。谢谢。
+
+> 3-1
+新增飙升榜（网易云，QQ）音乐下载，新增原创榜下载（网易云，虾米音乐），热歌榜新增虾米音乐
 
 > 2-28
 新增网易云和QQ音乐热歌榜下载,指定参数\-hot加平台就可以了,修复\/的BUG
@@ -38,7 +41,9 @@ version 0.10a
 - [x] 批量下载(*使用\-t参数，后跟playlist的URL，暂时只支持网易云,虾米，支持批量歌词下载，批量专辑图嵌入*)
 - [x] 高清音乐源(*使用\-tfc(test flac)参数来测试音乐是否有flac无损格式的，通过\-dfc(download flac)来下载flac格式的音乐，flac格式自带信息嵌入，所以不需要也不容许使用\-a，但可以使用\-l*)
 - [x] 增加配置文件，给用户更多自定义功能
-- [x] 批量下载hot(网易云热歌榜，QQ音乐热歌榜)
+- [x] 批量下载hot(网易云热歌榜，QQ音乐热歌榜,虾米音乐榜)
+- [x] 批量下载soar(网易云飙升榜,QQ飙升榜)
+- [x] 批量下载origin(网易云原创,虾米原创)
 - [ ] 根据文件下载音乐
 
 ## 配置
@@ -177,6 +182,28 @@ sdmusic -hot
 QQ音乐
 ```shell
 sdmusic -hot -p qq
+```
+虾米音乐
+```shell
+sdmusic -hot -p xiami
+```
+**下载飙升榜**
+网易云
+```shell
+sdmusic -soar
+```
+QQ音乐
+```shell
+sdmusic -soar -p qq
+```
+**下载原创**
+网易云
+```shell
+sdmusic -origin
+```
+虾米
+```shell
+sdmusic -origin -p xiami
 ```
 
 * \-l:批量下载歌词

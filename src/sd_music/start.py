@@ -3,6 +3,7 @@ from urllib.parse import parse_qs, urlparse
 
 from .constants.qqmusic_constants import qq_dict
 from .constants.netease_constants import netease_dict
+from .constants.xiami_constants import xiami_dict
 from . import config
 from .net.baidu_api import BaiduCloud
 from .net.kugou_api import KugouCloud
@@ -21,7 +22,7 @@ version_info="""
   \/_____/   \/____/   \/_/  \/_/   \/_____/   \/_____/   \/_/   \/_____/
   
 Search && Download Music Cli
-version 0.08a 
+version 0.11a 
 """
 
 config.load_config()
@@ -165,11 +166,22 @@ def download_qq_hot_songs(id, output, lyric, album):
     pass
 
 
+def download_xiami_hot_songs(id, output, lyric, album):
+    xiami_api = XiaMiCloud()
+    xiami_musics = xiami_api.get_hot_music_infos(id)
+    if album:
+        super_download_musics(xiami_musics, output)
+    else:
+        download_musics(xiami_musics, output)
+    if lyric:
+        for music in xiami_musics:
+            lrc_url = music.lrc_url
+            download_from_url(lrc_url, output + music.name + '.trc')
+
+
 def download_xiami_playlist_songs(music_play_list,output,lrc=False,album=False):
     xiami = XiaMiCloud()
     musics = xiami.get_play_list(music_play_list)
-    # for music in musics:
-    #     print(music.name)
     if album:
         super_download_musics(musics, output)
     else:
@@ -238,7 +250,7 @@ def get_xia_music_list_id(list, output, lyric, album):
         id = list.split('?')[0].split('/')[-1]
     else:
         id = list
-    download_xiami_playlist_songs(id,output,lyric,album)
+    download_xiami_playlist_songs(id, output, lyric, album)
 
 
 def get_qq_music_list_id(list, output, lyric, album):
@@ -263,9 +275,22 @@ def download_hot_list(platform, output, lyric, album):
         download_netease_playlist_songs(netease_dict['hot'], output, lyric, album)
     elif platform == 'qq':
         download_qq_hot_songs(qq_dict['hot'], output, lyric, album)
-        pass
-    pass
+    elif platform == 'xiami':
+        download_xiami_hot_songs(xiami_dict['hot'], output, lyric, album)
 
+
+def download_soar_list(platform, output, lyric, album):
+    if platform == 'netease':
+        download_netease_playlist_songs(netease_dict['soar'], output, lyric, album)
+    elif platform == 'qq':
+        download_qq_playlist_songs(qq_dict['soar'], output, lyric, album)
+
+
+def download_origin_list(platform, output, lyric, album):
+    if platform == 'netease':
+        download_netease_playlist_songs(netease_dict['origin'], output, lyric, album)
+    elif platform == 'xiami':
+        download_xiami_hot_songs(xiami_dict['origin'], output, lyric, album)
 
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
@@ -278,7 +303,9 @@ def main():
     parse.add_argument("-dfc", "--downloadflac", action="store_true", help="download flac music")
     parse.add_argument("-a", "--album", action="store_true",help="include music album info")
     parse.add_argument("-l", "--lyric", action="store_true", help="download with lyric")
-    parse.add_argument("-hot",action="store_true", help = "download hot music from netease qq kugou")
+    parse.add_argument("-hot", action="store_true", help = "download hot music from netease qq xiami")
+    parse.add_argument("-soar", action="store_true", help = "download soar music from netease qq")
+    parse.add_argument("-origin", action="store_true", help = "download origin music from netease xiami")
     parse.add_argument("-n", "--name", type=str, help="input music name")
     parse.add_argument("-i", "--index", type=int, default=0, help="index for download music")
     parse.add_argument("-p", "--platform", type=str, choices=music_platform, default="netease",
@@ -307,6 +334,12 @@ def main():
     elif args.hot:
         print("热歌下载启动：")
         download_hot_list(platform, output, args.lyric, args.album)
+    elif args.soar:
+        print("飙升音乐下载:")
+        download_soar_list(platform, output, args.lyric, args.album)
+    elif args.origin:
+        print("原创榜下载启动:")
+        download_origin_list(platform, output, args.lyric, args.album)
     elif args.testflac:
         test_music_flac(name)
     elif args.downloadflac:
