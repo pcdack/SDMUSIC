@@ -56,7 +56,7 @@ class XiaMiCloud(BaseApi):
             show_out_of_bound()
 
     def get_music_url(self,music_name,page_num,index):
-        infos=self.get_music_info(music_name,page_num)
+        infos = self.get_music_info(music_name,page_num)
         if len(infos) >= index:
             info=infos[index]
             download_url = info['listen_file']

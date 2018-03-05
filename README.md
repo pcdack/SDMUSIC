@@ -13,13 +13,16 @@
 
 
 Search && Download Music Cli
-version 0.11a
+version 0.12a
 
 本软件只用来交流测试与学习。
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
->代码写的如屎一般，还请各位提提写法上的issue。谢谢。
+>代码写的如屎一般，还请各位提提写法上的issue。谢谢。根据文件下载音乐将在下个commit中实现
+
+> 3-5
+ 量下载UK榜,美国Billboard周榜,Beatport全球电子舞曲榜,法国 NRJ Vos Hits 周榜,日本Oricon周榜,台湾Hito排行榜
 
 > 3-1
 新增飙升榜（网易云，QQ）音乐下载，新增原创榜下载（网易云，虾米音乐），热歌榜新增虾米音乐
@@ -28,7 +31,7 @@ version 0.11a
 新增网易云和QQ音乐热歌榜下载,指定参数\-hot加平台就可以了,修复\/的BUG
 
 > 2-27
-新增QQ音乐歌单下载，需要指定\-p qq。注意qq音乐批量下载中需要将`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=3710267240`改为`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240`否则无法正常工作。
+ 增QQ音乐歌单下载，需要指定\-p qq。注意qq音乐批量下载中需要将`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=3710267240`改为`https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge\&id=3710267240`否则无法正常工作。
 
 
 > 新增加虾米歌单下载，注意歌单下载默认是网易云，可以通过\-p xiami来下载虾米音乐，修复高清测试空格出错的情况.
@@ -44,6 +47,8 @@ version 0.11a
 - [x] 批量下载hot(网易云热歌榜，QQ音乐热歌榜,虾米音乐榜)
 - [x] 批量下载soar(网易云飙升榜,QQ飙升榜)
 - [x] 批量下载origin(网易云原创,虾米原创)
+- [x] 批量下载new(网易云新歌榜，QQ音乐新歌榜)
+- [x] 批量下载UK榜,美国Billboard周榜,Beatport全球电子舞曲榜,法国 NRJ Vos Hits 周榜,日本Oricon周榜,台湾Hito排行榜
 - [ ] 根据文件下载音乐
 
 ## 配置
@@ -64,7 +69,7 @@ version 0.11a
 
 ```shell
  download.dir = /home/{username}/Music/test/
- ```
+```
 
 
 
@@ -205,6 +210,22 @@ sdmusic -origin
 ```shell
 sdmusic -origin -p xiami
 ```
+
+**下载其他榜单**
+这里以UK榜为例
+```shell
+sdmusic -uk
+```
+
+*其他榜*
+
+* 日本Oricon周榜:oricon
+* 美国Billboard周榜:billboard
+* Beatport全球电子舞曲榜:beatport
+* 法国 NRJ Vos Hits 周榜:hits
+* 台湾Hito排行榜:hito
+
+
 
 * \-l:批量下载歌词
 * \-a:批量将专辑图嵌入音乐

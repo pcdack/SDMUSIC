@@ -19,7 +19,11 @@ netease_music_search_url='http://music.163.com/api/cloudsearch/pc'
 netease_lyric_search_url='http://music.163.com/api/song/lyric?id='
 netease_top_list_url = 'http://music.163.com/api/playlist/detail?id='
 
-netease_dict = {'soar': '19723756', 'hot': '3778678', 'new': '3779629', 'origin': '2884035'}
+netease_dict = {'soar': '19723756', 'hot': '3778678',
+                'new': '3779629', 'origin': '2884035',
+                'Hito': '112463', 'uk': '180106',
+                'Billboard': '60198', 'Beatport': '3812895',
+                    'hits': '27135204', 'Oricon': '60131'}
 
 def get_song_lyric_url(music_id):
     return netease_lyric_search_url+str(music_id)+'&lv=1'

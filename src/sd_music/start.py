@@ -135,7 +135,7 @@ def search_or_download(music_name, offset, platfrom='netease', choose=True, inde
         pass
 
 
-def download_netease_playlist_songs(music_play_list,output,lrc=False,album=False):
+def download_netease_playlist_songs(music_play_list, output, lrc=False, album=False):
     net_api = NetEaseCloud()
     musics = net_api.get_play_list(music_play_list)
     if album:
@@ -292,6 +292,14 @@ def download_origin_list(platform, output, lyric, album):
     elif platform == 'xiami':
         download_xiami_hot_songs(xiami_dict['origin'], output, lyric, album)
 
+
+def download_new_list(platform, output, lyric, album):
+    if platform == 'netease':
+        download_netease_playlist_songs(netease_dict['new'], output, lyric, album)
+    elif platform == 'qq':
+        download_qq_hot_songs(qq_dict['new'], output, lyric, album)
+
+
 def main():
     music_platform = ['netease', 'qq', '1ting', 'xiami', 'kugou']
     parse = argparse.ArgumentParser(description=desc)
@@ -303,9 +311,16 @@ def main():
     parse.add_argument("-dfc", "--downloadflac", action="store_true", help="download flac music")
     parse.add_argument("-a", "--album", action="store_true",help="include music album info")
     parse.add_argument("-l", "--lyric", action="store_true", help="download with lyric")
-    parse.add_argument("-hot", action="store_true", help = "download hot music from netease qq xiami")
-    parse.add_argument("-soar", action="store_true", help = "download soar music from netease qq")
-    parse.add_argument("-origin", action="store_true", help = "download origin music from netease xiami")
+    parse.add_argument("-hot", action="store_true", help="download hot music list from netease qq xiami")
+    parse.add_argument("-soar", action="store_true", help="download soar music list from netease qq")
+    parse.add_argument("-origin", action="store_true", help="download origin music list from netease xiami")
+    parse.add_argument("-new", action="store_true", help="download new music list from netease qq")
+    parse.add_argument("-uk", action="store_true", help="download uk rank from netease")
+    parse.add_argument("-billboard", action="store_true", help="download Billboard rank from netease")
+    parse.add_argument("-beatport", action="store_true", help="download Beatport rank from netease")
+    parse.add_argument("-hito", action="store_true", help="download hito rank from netease")
+    parse.add_argument("-hits", action="store_true", help="download hits rank from netease")
+    parse.add_argument("-oricon", action="store_true", help="download oricon rank from netease")
     parse.add_argument("-n", "--name", type=str, help="input music name")
     parse.add_argument("-i", "--index", type=int, default=0, help="index for download music")
     parse.add_argument("-p", "--platform", type=str, choices=music_platform, default="netease",
@@ -340,6 +355,27 @@ def main():
     elif args.origin:
         print("原创榜下载启动:")
         download_origin_list(platform, output, args.lyric, args.album)
+    elif args.new:
+        print("新歌榜下载:")
+        download_new_list(platform, output, args.lyric, args.album)
+    elif args.uk:
+        print("uk榜下载：")
+        download_netease_playlist_songs(netease_dict['uk'], output, args.lyric, args.album)
+    elif args.billboard:
+        print("Billboard榜下载:")
+        download_netease_playlist_songs(netease_dict['Billboard'], output, args.lyric, args.album)
+    elif args.beatport:
+        print("Beatport榜下载:")
+        download_netease_playlist_songs(netease_dict['Beatport'], output, args.lyric, args.album)
+    elif args.hito:
+        print("台湾Hito排行榜:")
+        download_netease_playlist_songs(netease_dict['Hito'], output, args.lyric, args.album)
+    elif args.hits:
+        print("法国 NRJ Vos Hits 周榜:")
+        download_netease_playlist_songs(netease_dict['hits'], output, args.lyric, args.album)
+    elif args.oricon:
+        print("日本Oricon周榜:")
+        download_netease_playlist_songs(netease_dict['Oricon'], output, args.lyric, args.album)
     elif args.testflac:
         test_music_flac(name)
     elif args.downloadflac:
