@@ -81,6 +81,7 @@ class NetEaseCloud(BaseApi):
                 music_info['id'] = myId
                 music_info['music_name'] = music_name
                 music_info['index'] = index
+                music_info['album'] = myIdJson['al']['name']
                 music_infos.append(music_info)
                 index += 1
             return music_infos
@@ -92,7 +93,7 @@ class NetEaseCloud(BaseApi):
         if music_infos != None:
             show_title()
             for music_info in music_infos:
-                show_music(music_info['index'], music_info['music_name'], music_info['author'])
+                show_music(music_info['index'], music_info['music_name'], music_info['author'], music_info['album'])
         else:
             print("出现错误")
 
