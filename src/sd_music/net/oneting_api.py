@@ -3,7 +3,7 @@ import requests
 from ..bean.music import Music
 from ..net.base_api import BaseApi
 from ..constants.oneting_constants import get_music_search_url, oneting_headers, oneting_base_download_url
-from ..utils.shower import show_title, show_music
+from ..utils.shower import show_music
 
 
 class OneCloud(BaseApi):
@@ -28,12 +28,15 @@ class OneCloud(BaseApi):
 
     def show_music_infos(self,music_name,page_mun):
         song_file_paths=self.get_music_info(music_name,page_mun)
-        show_title()
+        info_list=[]
         i = 1
         for song_files in song_file_paths:
+            song = song_files['song_name']
             author = song_files['singer_name']
-            show_music(i,music_name,author)
+            album = song_files['album_name']
+            info_list.append([i,song,author,album])
             i += 1
+        show_music(info_list)
 
     def get_music_url_and_info(self,music_name,page_num,index):
         song_file_paths = self.get_music_info(music_name, page_num)

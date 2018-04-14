@@ -5,7 +5,7 @@ from ..constants.netease_constants import headers, get_song_url, netease_music_s
     get_song_lyric_url, get_playlist_url
 from ..encrypt.netease_encrypt import encrypted_request
 from ..net.base_api import BaseApi
-from ..utils.shower import show_music, show_title
+from ..utils.shower import show_music
 
 
 class NetEaseCloud(BaseApi):
@@ -64,22 +64,18 @@ class NetEaseCloud(BaseApi):
 
     # 获取音乐的作者和MusicId
     def get_musics_info(self, music_name, offset=1):
-        music = Music
         myIdJsons = self.get_music_id_json(music_name, offset)
         music_infos = []
         index = 1
         if myIdJsons:
             for myIdJson in myIdJsons:
                 music_info = {}
-                myId = myIdJson['id']
-                music.id = myId
-                myAuthors = myIdJson['ar']
                 authors = ''
-                for author in myAuthors:
+                for author in myIdJson['ar']:
                     authors += author['name']
                 music_info['author'] = authors
-                music_info['id'] = myId
-                music_info['music_name'] = music_name
+                music_info['id'] = myIdJson['id']
+                music_info['music_name'] = myIdJson['name']
                 music_info['index'] = index
                 music_info['album'] = myIdJson['al']['name']
                 music_infos.append(music_info)
@@ -91,9 +87,10 @@ class NetEaseCloud(BaseApi):
     def show_music_info(self, music_name, offset=1):
         music_infos = self.get_musics_info(music_name, offset)
         if music_infos != None:
-            show_title()
+            info_list=[]
             for music_info in music_infos:
-                show_music(music_info['index'], music_info['music_name'], music_info['author'], music_info['album'])
+                info_list.append([music_info['index'], music_info['music_name'], music_info['author'], music_info['album']])
+            show_music(info_list)
         else:
             print("出现错误")
 

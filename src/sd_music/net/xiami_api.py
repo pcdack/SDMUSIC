@@ -36,13 +36,12 @@ class XiaMiCloud(BaseApi):
 
     def show_music_infos(self,music_name,page_num):
         infos=self.get_music_info(music_name,page_num)
-        show_title()
         i=1
+        info_list=[]
         for info in infos:
-            author = info['artist_name']
-            album = info['album_name']
-            show_music(i,music_name,author,album)
+            info_list.append([str(i),info['song_name'],info['artist_name'],info['album_name']])
             i+=1
+        show_music(info_list)
 
     def get_music_url_and_info(self,music_name,page_num,index):
         infos = self.get_music_info(music_name, page_num)

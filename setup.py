@@ -14,6 +14,7 @@ setup(
                 'mutagen>=1.38.0',
                 'tqdm>=4.19.5',
                 'pydub>=0.20.0',
+                'tabulate>=0.8.2'
     ],
 
     entry_points={
