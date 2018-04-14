@@ -47,7 +47,7 @@ class XiaMiCloud(BaseApi):
         infos = self.get_music_info(music_name, page_num)
         if len(infos) >= index:
             info = infos[index]
-            self.music.name=music_name
+            self.music.name=info['song_name']
             self.music.author=info['artist_name']
             self.music.album_name=info['album_name']
             self.music.album_pic_url=info['album_logo']
