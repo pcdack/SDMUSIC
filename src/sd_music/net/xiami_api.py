@@ -40,7 +40,8 @@ class XiaMiCloud(BaseApi):
         i=1
         for info in infos:
             author = info['artist_name']
-            show_music(i,music_name,author)
+            album = info['album_name']
+            show_music(i,music_name,author,album)
             i+=1
 
     def get_music_url_and_info(self,music_name,page_num,index):
