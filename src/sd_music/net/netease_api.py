@@ -54,7 +54,7 @@ class NetEaseCloud(BaseApi):
         if 'songs' in result['result']:
             return result['result']['songs']
 
-    def get_music_ids(self, music_name, offset=1):
+    def get_music_ids(self, music_name, offset=0):
         myIdJsons = self.get_music_id_json(music_name, offset)
         myIds = []
         for myIdJson in myIdJsons:
@@ -63,7 +63,7 @@ class NetEaseCloud(BaseApi):
         return myIds
 
     # 获取音乐的作者和MusicId
-    def get_musics_info(self, music_name, offset=1):
+    def get_musics_info(self, music_name, offset=0):
         myIdJsons = self.get_music_id_json(music_name, offset)
         music_infos = []
         index = 1
@@ -84,7 +84,7 @@ class NetEaseCloud(BaseApi):
         else:
             print("出现错误")
 
-    def show_music_info(self, music_name, offset=1):
+    def show_music_info(self, music_name, offset=0):
         music_infos = self.get_musics_info(music_name, offset)
         if music_infos != None:
             info_list=[]
