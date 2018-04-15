@@ -5,7 +5,7 @@ import re
 from ..bean.music import Music
 from ..constants.xiami_constants import get_search_url, xiami_header, get_list_url, get_hot_url, get_music_id
 from ..net.base_api import BaseApi
-from ..utils.shower import show_music, show_out_of_bound
+from ..utils.shower import show_title, show_music, show_out_of_bound
 
 
 class XiaMiCloud(BaseApi):
@@ -37,16 +37,17 @@ class XiaMiCloud(BaseApi):
     def show_music_infos(self,music_name,page_num):
         infos=self.get_music_info(music_name,page_num)
         i=1
+        info_list=[]
         for info in infos:
-            author = info['artist_name']
-            show_music(i,music_name,author)
+            info_list.append([str(i),info['song_name'],info['artist_name'],info['album_name']])
             i+=1
+        show_music(info_list)
 
     def get_music_url_and_info(self,music_name,page_num,index):
         infos = self.get_music_info(music_name, page_num)
         if len(infos) >= index:
             info = infos[index]
-            self.music.name=music_name
+            self.music.name=info['song_name']
             self.music.author=info['artist_name']
             self.music.album_name=info['album_name']
             self.music.album_pic_url=info['album_logo']

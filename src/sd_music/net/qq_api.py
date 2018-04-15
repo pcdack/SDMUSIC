@@ -6,7 +6,7 @@ from ..bean.music import Music
 from ..constants.qqmusic_constants import qq_headers, qq_get_music_info_url, qq_download_base_url, \
     qq_get_music_lyric_url, qq_lrc_headers, qq_album_url, qq_music_list_url, qq_top_list_url
 from ..net.base_api import BaseApi
-from ..utils.shower import show_music, show_title
+from ..utils.shower import show_music
 
 
 class QQMusic(BaseApi):
@@ -33,15 +33,16 @@ class QQMusic(BaseApi):
 
     def show_music_infos(self, music_name, page_num=1):
         myDatas=self.get_music_info(music_name, page_num)
-        show_title()
+        info_list=[]
         i=1
         for m in myDatas:
             authors = m['singer']
             author = ''
             for a in authors:
                 author += a['name']
-            show_music(i,music_name,author)
+            info_list.append([i,m['songname'],author,m['albumname']])
             i += 1
+        show_music(info_list)
 
     def get_music_url_and_info(self, music_name, index, page_num=1):
         myDatas = self.get_music_info(music_name, page_num)

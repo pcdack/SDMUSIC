@@ -28,10 +28,11 @@ class BaiduCloud(BaseApi):
     def show_music_infos(self,music_name,page_num):
         result=self.get_music_info(music_name,page_num)
         i = 1
-        show_title()
+        info_list=[]
         for res in result:
-            show_music(i,music_name,res['artistname'])
+            info_list.append([i,res['songname'],res['artistname'],None])
             i += 1
+        show_music(info_list)
 
     def get_flac_info(self,name):
         name= self.change_name_format(name)

@@ -3,7 +3,7 @@ import requests
 from ..bean.music import Music
 from ..constants.kugou_constants import get_search_url, kugou_header, kugou_base_download_url,get_lyric_url
 from ..net.base_api import BaseApi
-from ..utils.shower import show_music, show_out_of_bound, show_title
+from ..utils.shower import show_music, show_out_of_bound
 
 
 class KugouCloud(BaseApi):
@@ -24,19 +24,22 @@ class KugouCloud(BaseApi):
 
     def get_music_info(self,music_name,page_num):
         url=get_search_url(music_name,page_num)
+        print(url)
         r=self.get_request(url,kugou_header)
         infos=r['data']['info']
         return infos
 
     def show_music_infos(self,music_name,page_num):
         infos=self.get_music_info(music_name,page_num)
-        show_title()
+        info_list=[]
         i=1
         for info in infos:
             authors=info['singername']
             music_name=info['songname_original']
-            show_music(i,music_name,authors)
+            album=info['album_name']
+            info_list.append([i,music_name,authors,album])
             i+=1
+        show_music(info_list)
 
     def get_music_url(self,music_name,page_num,index):
         infos = self.get_music_info(music_name, page_num)

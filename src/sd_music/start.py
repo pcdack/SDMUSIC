@@ -62,6 +62,7 @@ def get_music_name(music_info, music_format='.mp3'):
 
 def search_or_download(music_name, offset, platfrom='netease', choose=True, index=1, output='./', lyric=False, album=False):
     if platfrom == 'netease':
+        offset=offset*10-10
         net_api=NetEaseCloud()
         if choose:
             net_api.show_music_info(music_name,offset)
