@@ -13,13 +13,16 @@
 
 
 Search && Download Music Cli
-version 0.12a
+version 0.13
 
 本软件只用来交流测试与学习。
 支持的搜索和下载平台：网易，QQ，酷狗，虾米，一听
 支持的系统：理论上支持所有的系统，已测试系统Linux(Arch,Ubuntu,Mac(网友测试，十分感谢))
 
 >代码写的如屎一般，还请各位提提写法上的issue。谢谢。根据文件下载音乐将在下个commit中实现
+
+> 4-17
+修复qq音乐平台无法下载的BUG
 
 > 4-15
 修改了部分BUG，美化了结果输出。非常感谢[raawaa](https://github.com/raawaa)。

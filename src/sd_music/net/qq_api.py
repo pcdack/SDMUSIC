@@ -60,6 +60,7 @@ class QQMusic(BaseApi):
             r=self.get_request(qq_download_url,header=qq_headers)
             if 'url' in r:
                 download_url = r['url'][str(myId)]
+                download_url = download_url.replace("ws", "dl")
                 return "http://"+download_url
             else:
                 print("未知错误")
@@ -105,6 +106,7 @@ class QQMusic(BaseApi):
             r = self.get_request(qq_download_url, header=qq_headers)
             if 'url' in r:
                 download_url = r['url'][str(myId)]
+                download_url = download_url.replace("ws", "dl")
                 music.download_url = "http://" + download_url
             else:
                 print("未知错误")
@@ -145,6 +147,7 @@ class QQMusic(BaseApi):
             r = self.get_request(qq_download_url, header=qq_headers)
             if 'url' in r:
                 download_url = r['url'][str(myId)]
+                download_url = download_url.replace("ws", "dl")
                 music.download_url = "http://" + download_url
                 return music
         else:
