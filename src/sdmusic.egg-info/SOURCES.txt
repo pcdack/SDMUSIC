@@ -22,6 +22,7 @@ src/sd_music/net/kugou_api.py
 src/sd_music/net/netease_api.py
 src/sd_music/net/oneting_api.py
 src/sd_music/net/qq_api.py
+src/sd_music/net/qq_flac_api.py
 src/sd_music/net/xiami_api.py
 src/sd_music/utils/__init__.py
 src/sd_music/utils/cover_music.py

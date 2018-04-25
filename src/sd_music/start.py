@@ -1,10 +1,13 @@
 import argparse
 from urllib.parse import parse_qs, urlparse
 
-from .constants.qqmusic_constants import qq_dict
+from tqdm import tqdm
+
+from .constants.qqmusic_constants import qq_dict, quality
 from .constants.netease_constants import netease_dict
 from .constants.xiami_constants import xiami_dict
 from . import config
+from .net.qq_flac_api import QQFlacCloud                    #QQ flac格式音乐
 from .net.baidu_api import BaiduCloud
 from .net.kugou_api import KugouCloud
 from .net.netease_api import NetEaseCloud
@@ -222,26 +225,42 @@ def get_parse_id(song_id):
 
 
 def test_music_flac(name):
-    baidu = BaiduCloud()
-    baidu.get_flac_info(name)
+    # baidu = BaiduCloud()
+    # baidu.get_flac_info(name)
+    print("进入测试")
+    qq_flac=QQFlacCloud()
+    json_jm,jm1=qq_flac.check_music_flac(name)
+    if len(jm1)>0:
+        print("恭喜有{}的无损品质音乐。".format(name))
     pass
 
 
 def download_flac(name,output,lyric):
-    baidu = BaiduCloud()
-    music_info = baidu.get_flac_url_and_info(name)
-    download_url = music_info.download_url
-    song_file_name = '{}.flac'.format(music_info.name)
-    switcher_song = {
-        1: song_file_name,
-        2: '{} - {}.flac'.format(music_info.author, music_info.name),
-        3: '{} - {}.flac'.format(music_info.name, music_info.author)
-    }
-    song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
-    download_from_url(download_url,output+song_file_name)
-    if lyric:
-        lrc_url=baidu.get_lrc()
-        download_from_url(lrc_url,output+name+'.lrc')
+    qq_flac = QQFlacCloud()
+    json_jm, jm1 = qq_flac.check_music_flac(name)
+    dl_jm1=qq_flac.get_all_flac_url(jm1)
+    for j in tqdm(dl_jm1):
+        #        output_dir = Path('I:\QQMusic\无损')
+        songer = j['singer'][0]['name']
+        name = j['songname']
+        album = j['albumname']
+        flacurl = j['dl_url']['flac']
+        suffix = quality['flac']['suffix']
+        songid = j['songid']
+        cdIdx = j['cdIdx']
+        sizeflac = j['sizeflac']
+        song_file_name = '{}.flac'.format(name)
+        switcher_song = {
+            1: song_file_name,
+            2: '{} - {}.flac'.format(songer, name),
+            3: '{} - {}.flac'.format(name, songer)
+        }
+        song_file_name = switcher_song.get(config.SONG_NAME_TYPE, song_file_name)
+
+        download_from_url(flacurl,output+song_file_name)
+    # if lyric:
+    #     lrc_url=baidu.get_lrc()
+    #     download_from_url(lrc_url,output+name+'.lrc')
     pass
 
 

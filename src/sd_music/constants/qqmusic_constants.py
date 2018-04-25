@@ -1,4 +1,5 @@
 
+qq_search_flac_url='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?&t=0&aggr=1&cr=1&catZhida=1&lossless=1&flag_qc='
 qq_search_url_first='https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp?w='
 qq_search_url_index='&p='
 qq_search_url_last='&n=10&format=json'
@@ -20,18 +21,25 @@ qq_lrc_headers={
 
 qq_dict = {'soar': 4, 'hot': 26, 'new': 27}
 
+quality = {
+        'ape':  {'prefix': 'A000', 'suffix': 'ape',  'fromtag': '53', 'size': 'sizeape'},
+        'flac': {'prefix': 'F000', 'suffix': 'flac', 'fromtag': '53', 'size': 'sizeflac'},
+        '320k': {'prefix': 'M800', 'suffix': 'mp3',  'fromtag': '53', 'size': 'size320'},
+        '128k': {'prefix': 'M500', 'suffix': 'mp3',  'fromtag': '53', 'size': 'size128'}
+        }
 
 def qq_get_music_info_url(music_name,page_num):
     return qq_search_url_first+music_name+qq_search_url_index+str(page_num)+qq_search_url_last
 
 
+def qq_music_flac_info_url(music_name,pernum,p):
+    return qq_search_flac_url+str(p)+'&p='+str(pernum)+'&w='+music_name
+
 def qq_get_music_lyric_url(msongId):
     return qq_lyric_url+msongId
 
-
 def qq_music_list_url(listId):
     return qq_list_url+str(listId)+'&type=1&json=1&utf8=1&onlysong=0&picmid=1&nosign=1&song_begin=0&song_num=15&_=1519445320400'
-
 
 def qq_top_list_url(topId):
     return qq_top_url+str(topId)+'&_=1519445015470'
