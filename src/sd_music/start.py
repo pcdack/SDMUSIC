@@ -25,7 +25,7 @@ version_info="""
   \/_____/   \/____/   \/_/  \/_/   \/_____/   \/_____/   \/_/   \/_____/
   
 Search && Download Music Cli
-version 0.11a 
+version 0.13a 
 """
 
 config.load_config()
